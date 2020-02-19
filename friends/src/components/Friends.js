@@ -1,49 +1,34 @@
-import React, { useState, useEffect } from "react";
-import "../App.css";
-import { axiosWithAuth } from "../utils/axiosWithAuth";
-import FriendsList from "./FriendsList";
-import FriendForm from "./FriendForm";
+import React, { useState, useEffect } from 'react';
+import { axiosWithAuth } from '../utils/axiosWithAuth';
+import Friend from './Friend.js';
 
-const Friends = props => {
-  const [friends, setFriends] = useState([]);
-  const [newGet, setNewGet] = useState();
-  const [edit, setEdit] = useState(false);
-  const [newFriend, setnewFriend] = useState({
-    id: "",
-    name: "",
-    age: "",
-    email: ""
-  });
+const Friends = () => {
+    const [friends, setFriends] = useState([]);
+    console.log("friends", friends)
 
-  useEffect(() => {
-    setNewGet(false);
-    axiosWithAuth()
-      .get("/friends")
-      .then(res => {
-        console.log("GET", res.data);
-        setFriends(res.data);
-      })
-      .catch(err => console.log(err));
-  }, [newGet]);
+    useEffect(() => {
+        getFriends();
+    }, [])
 
-  return (
-    <div className="friends">
-      <h1>Welcome to the Friends area!</h1>
-      <FriendsList
-        friends={friends}
-        setNewGet={setNewGet}
-        setEdit={setEdit}
-        newFriend={newFriend}
-        setnewFriend={setnewFriend}
-      />
-      <FriendForm
-        setNewGet={setNewGet}
-        newFriend={newFriend}
-        setnewFriend={setnewFriend}
-        edit={edit}
-      />
-    </div>
-  );
-};
+
+    const getFriends = () => {
+        axiosWithAuth().get("/friends")
+            .then(res => {
+                console.log(res);
+                setFriends(res.data)})
+            .catch(err => console.log(err));
+    }
+
+    return (
+        <div className="friends-list">
+            {friends.map((friend, id) =>
+            <Friend key={id} 
+                    name={friend.name} 
+                    age={friend.age} 
+                    email={friend.email}/>)}  
+                   
+        </div> 
+    );
+}
 
 export default Friends;
